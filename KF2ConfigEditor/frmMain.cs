@@ -85,7 +85,7 @@ namespace KF2ConfigEditor
 
         public void SaveSettings()
         {
-            _steamCMDPath = @"G:\SteamCMD";
+            _steamCMDPath = @":\SteamCMD";
             mySettings.SteamCMDPath = _steamCMDPath;
             mySettings.GamePath = _kfGamePath;
             mySettings.EnginePath = _kfEnginePath;
@@ -117,6 +117,8 @@ namespace KF2ConfigEditor
         {
             var mapz = GetMapCycle();
             var allMaps = mapz.Value.Split(new char[] { '\"', ',' }).Where(m => m.Contains("KF") || m.Contains("Maps-")).ToList();
+
+            comboAllMaps.Items.Clear();
             allMaps.ForEach(a => comboAllMaps.Items.Add(a));
         }
 
@@ -124,7 +126,7 @@ namespace KF2ConfigEditor
         {
             string mapName = comboAllMaps.Items[comboAllMaps.SelectedIndex].ToString();
             string gameDifficulty = comboDifficulty.SelectedIndex.ToString();
-            string adminPass = "123";
+            string adminPass = "";
             string maxPlayers = 6.ToString();
             string gameLength = comboLength.SelectedIndex.ToString();
             string gameMode = comboGameType.SelectedIndex.ToString();
@@ -196,6 +198,25 @@ namespace KF2ConfigEditor
             MessageBox.Show("A OK!", "OK!", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
+        private void UpdateComboBoxes(CustomMap map, bool Add)
+        {
+            if (Add)
+            {
+                comboAllMaps.Items.Add(map.Name);
+
+                int idx = 1;
+                if (map.Type == "KF2")
+                    idx = comboMapList.Items.IndexOf("-------Custom Maps-------") + 1;
+
+                comboMapList.Items.Insert(idx, map.Name);
+            }
+            else
+            {
+                comboMapList.Items.Remove(map.Name);
+                comboAllMaps.Items.Remove(map.Name);
+            }
+        }
+
         public void AddMap(string Name, string WSKey, string Type)
         {
             var data = ReadIniSection(_kfEnginePath, "OnlineSubsystemSteamworks.KFWorkshopSteamworks", true);
@@ -212,12 +233,15 @@ namespace KF2ConfigEditor
             AddWorkshopKey(WSKey);
             AddMapInfo(Name, Type);
 
-            _customMaps.Add(new CustomMap { Name = Name, WSKey = WSKey, Type = Type });
+            var map = new CustomMap { Name = Name, WSKey = WSKey, Type = Type };
+
+            _customMaps.Add(map);
+            UpdateComboBoxes(map, true);
         }
 
         public void RemoveMap()
         {
-            if(comboAllMaps.SelectedIndex == -1)
+            if (comboAllMaps.SelectedIndex == -1)
             {
                 statusBar.Text = "No map selected!";
                 return;
@@ -226,6 +250,8 @@ namespace KF2ConfigEditor
             var selectedMap = _customMaps.FirstOrDefault(m => m.Name == comboAllMaps.Items[comboAllMaps.SelectedIndex]);
             EditMapEngineIni(selectedMap.Name, "", true);
             EditMapGameIni(selectedMap.Name, "", selectedMap.Type, "", true);
+
+            UpdateComboBoxes(selectedMap, false);
         }
 
         public void StartServer()
@@ -384,7 +410,7 @@ namespace KF2ConfigEditor
 
         private void EditSong()
         {
-            if(comboMapList.SelectedIndex == 0)
+            if (comboMapList.SelectedIndex == 0)
             {
                 statusBar.Text = "No song selected!";
                 return;
@@ -439,7 +465,18 @@ namespace KF2ConfigEditor
 
         private void btnOpenGame_Click(object sender, EventArgs e)
         {
-            Process.Start(_kfGamePath);
+            using (Process p = new Process())
+            {
+                //p.Exited += new EventHandler(p_Exited);
+                p.StartInfo.FileName = _kfGamePath;
+                //p.EnableRaisingEvents = true;
+                p.Start();
+            }
+
+        }
+        private void p_Exited(object sender, EventArgs e)
+        {
+            //GetAllMaps();
         }
 
         private void btnOpenEngine_Click(object sender, EventArgs e)
