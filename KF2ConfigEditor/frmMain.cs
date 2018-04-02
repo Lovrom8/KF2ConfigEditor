@@ -82,7 +82,7 @@ namespace KF2ConfigEditor
 
         public void SaveSettings()
         {
-            _steamCMDPath = @"G:\SteamCMD";
+            _steamCMDPath = @":\SteamCMD";
             mySettings.SteamCMDPath = _steamCMDPath;
             mySettings.GamePath = _kfGamePath;
             mySettings.EnginePath = _kfEnginePath;
