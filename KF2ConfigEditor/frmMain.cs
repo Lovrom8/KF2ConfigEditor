@@ -12,9 +12,6 @@ namespace KF2ConfigEditor
 {
     public partial class frmMain : Form
     {
-        //https://steamcommunity.com/sharedfiles/filedetails/?id=889441862&searchtext=
-        //https://steamcommunity.com/sharedfiles/filedetails/?id=809848323&searchtext=
-        //https://steamcommunity.com/sharedfiles/filedetails/?id=643269874&searchtext=
         private Settings mySettings;
 
         private string _steamCMDPath;
@@ -58,7 +55,7 @@ namespace KF2ConfigEditor
             }
             else
             {
-                _steamCMDPath = @"G:\SteamCMD";
+                _steamCMDPath = @":\SteamCMD";
                 _kfConfigFolder = _steamCMDPath + @"\KF2Server\KFGame\Config";
                 _kfCacheFolder = _steamCMDPath + @"\KF2Server\KFGame\Cache";
                 _kfWebPath = Path.Combine(_kfConfigFolder, "KFWeb.ini");
@@ -85,7 +82,7 @@ namespace KF2ConfigEditor
 
         public void SaveSettings()
         {
-            _steamCMDPath = @":\SteamCMD";
+            _steamCMDPath = @"G:\SteamCMD";
             mySettings.SteamCMDPath = _steamCMDPath;
             mySettings.GamePath = _kfGamePath;
             mySettings.EnginePath = _kfEnginePath;
@@ -182,7 +179,7 @@ namespace KF2ConfigEditor
             if (Type == "KF1")
             {
                 int typeIdx = lines[idx].IndexOf("-------KF2 Maps-------");
-                lines[idx] = lines[idx].Insert(typeIdx, Name + "\",");
+                lines[idx] = lines[idx].Insert(typeIdx-2, ",\"" + Name + "\"");
             }
             else
             {
