@@ -61,7 +61,7 @@ namespace KF2ConfigEditor
                 _kfWebPath = Path.Combine(_kfConfigFolder, "KFWeb.ini");
                 _kfGamePath = Path.Combine(_kfConfigFolder, "PCServer-KFGame.ini");
                 _kfEnginePath = Path.Combine(_kfConfigFolder, "PCServer-KFEngine.ini");
-                //_kfDediPath = @"G:\KF2Server.lnk";
+                //_kfDediPath = @":\KF2Server.lnk";
                 _kfDediPath = Path.Combine(_steamCMDPath, @"\KF2Server\Binaries\Win64\KFServer.exe");
                 _kfMapsFolder = _steamCMDPath + @"\KF2Server\KFGame\BrewedPC\Maps";
                 _kfDefaultBat = Path.Combine(_steamCMDPath, "KF2Server", "KF2ServerStartEmpty.bat");
